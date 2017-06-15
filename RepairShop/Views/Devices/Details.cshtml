@@ -1,0 +1,120 @@
+@model RepairShop.Models.ViewModels.DeviceDetailViewModel
+
+@{
+	ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+	<h4>Device</h4>
+	<hr />
+	<dl class="dl-horizontal">
+		<dt>
+			@Html.DisplayNameFor(model => model.Device.SerialNbr)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Device.SerialNbr)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Device.Type)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Device.Type)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Device.Make)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Device.Make)
+		</dd>
+		<dt>
+			@Html.DisplayNameFor(model => model.Device.Model)
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Device.Model)
+		</dd>
+		<dt>
+			Device Owner
+		</dt>
+		<dd>
+			@Html.DisplayFor(model => model.Device.Customer.Name)
+		</dd>
+	</dl>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.Device.Id">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
+
+<hr />
+
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					<a asp-action="Details" asp-route-sortOrder="@ViewData["ServiceTitleSortParm"]" asp-route-currentFilter=@ViewData["CurrentFilter"]>
+						@Html.DisplayNameFor(model => model.DeviceServices.FirstOrDefault().Service.Title)
+					</a>
+				</th>
+				<th>
+					<a asp-action="Details" asp-route-sortOrder="@ViewData["StartDateSortParm"]" asp-route-currentFilter=@ViewData["CurrentFilter"]>
+						@Html.DisplayNameFor(model => model.DeviceServices.FirstOrDefault().DateStarted)
+					</a>
+				</th>
+				<th>
+					<a asp-action="Details" asp-route-sortOrder="@ViewData["EndDateSortParm"]" asp-route-currentFilter=@ViewData["CurrentFilter"]>
+						@Html.DisplayNameFor(model => model.DeviceServices.FirstOrDefault().DateCompleted)
+					</a>
+				</th>
+				<th>
+					<a asp-action="Details" asp-route-sortOrder="@ViewData["CostSortParm"]" asp-route-currentFilter=@ViewData["CurrentFilter"]>
+						@Html.DisplayNameFor(model => model.DeviceServices.FirstOrDefault().Service.Price)
+					</a>
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.DeviceServices.FirstOrDefault().Comments)
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.DeviceServices)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(model => item.Service.Title)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.DateStarted)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.DateCompleted)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.Service.Price)
+					</td>
+					<td>
+						@Html.DisplayFor(model => item.Comments)
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+	@{ 
+		var prevDisabled = !Model.DeviceServices.HasPreviousPage ? "disabled" : "";
+		var nextDisabled = !Model.DeviceServices.HasNextPage ? "disabled" : "";
+
+	<a asp-action="Details"
+	   asp-route-id="@Model.Device.Id"
+	   asp-route-sortOrder="@ViewData["CurrentSort"]"
+	   asp-route-page="@(Model.DeviceServices.PageIndex - 1)"
+	   class="btn btn-default @prevDisabled btn">Previous</a>
+
+	<a asp-action="Details"
+	   asp-route-id="@Model.Device.Id"
+	   asp-route-sortOrder="@ViewData["CurrentSort"]"
+	   asp-route-page="@(Model.DeviceServices.PageIndex + 1)"
+	   class="btn btn-default @nextDisabled btn">Next</a>
+		}
+</div>

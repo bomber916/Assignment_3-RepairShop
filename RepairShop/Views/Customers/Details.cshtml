@@ -1,0 +1,103 @@
+@model RepairShop.Models.ViewModels.CustomerDetailViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Customer</h4>
+    <hr />
+	<div class="row">
+		<div class="col-md-6">
+			<dl class="dl-horizontal">
+				<dt>
+					@Html.DisplayNameFor(model => model.Customer.Name)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Customer.Name)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.Customer.Address)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Customer.Address)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.Customer.Phone)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Customer.Phone)
+				</dd>
+				<dt>
+					@Html.DisplayNameFor(model => model.Customer.EmailAddress)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.Customer.EmailAddress)
+				</dd>
+			</dl>
+		</div>
+		<div class="col-md-6">
+			<dl class="dl-horizontal">
+				<dt>
+					@Html.DisplayNameFor(model => model.TotalEarned)
+				</dt>
+				<dd>
+					@Html.DisplayFor(model => model.TotalEarned)
+				</dd>
+			</dl>
+		</div>
+	</div>
+</div>
+<div>
+	<a asp-action="Edit" asp-route-id="@Model.Customer.Id">Edit</a> |
+	<a asp-action="Index">Back to List</a>
+</div>
+<hr/>
+<h4>Devices</h4>
+<div>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.Devices.First().Make)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Devices.First().Model)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Devices.First().Type)
+				</th>
+				<th>
+					@Html.DisplayNameFor(model => model.Devices.First().SerialNbr)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.Devices)
+			{
+				<tr>
+					
+					<td>
+						@Html.DisplayFor(modelItem => item.Make)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Model)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Type)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.SerialNbr)
+					</td>
+					<td>
+						<a asp-controller="Devices" asp-action="Details" asp-route-id="@item.Id">Details</a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+

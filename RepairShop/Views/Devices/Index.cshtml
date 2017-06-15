@@ -1,0 +1,66 @@
+@model IEnumerable<RepairShop.Models.Device>
+
+@{
+	ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+	<a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.SerialNbr)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Type)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Make)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Model)
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.SerialNbr)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Type)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Make)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Model)
+				</td>
+			</tr>
+			<tr>
+				<th>
+				</th>
+			</tr>
+			foreach (var deviceService in item.DeviceServices)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => deviceService.Service.Title)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => deviceService.DateCompleted)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => deviceService.Service.Price)
+					</td>
+				</tr>
+			}
+		}
+	</tbody>
+</table>
