@@ -8,10 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using RepairShop.Data;
 using RepairShop.Models;
 using RepairShop.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace RepairShop.Controllers
 {
-    public class DevicesController : Controller
+    public class DevicesController : BaseController
     {
         private readonly RepairShopContext _context;
 
@@ -23,7 +25,7 @@ namespace RepairShop.Controllers
         // GET: Devices
         public async Task<IActionResult> Index()
         {
-            var repairShopContext = _context.Devices.Include(d => d.Customer);
+            var repairShopContext = _context.Devices.Include(d => d.User);
             return View(await repairShopContext.ToListAsync());
         }
 
@@ -48,7 +50,7 @@ namespace RepairShop.Controllers
 
 
 			var device = await _context.Devices
-                .Include(d => d.Customer)
+                .Include(d => d.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
 			if(device == null)
@@ -68,17 +70,11 @@ namespace RepairShop.Controllers
 				case "serviceTitle_Desc":
 					deviceServices = deviceServices.OrderByDescending(ds => ds.Service.Title);
 					break;
-				case "startDate":
-					deviceServices = deviceServices.OrderBy(ds => ds.DateStarted);
+				case nameof(DeviceService.DateOrdered):
+					deviceServices = deviceServices.OrderBy(ds => ds.DateOrdered);
 					break;
-				case "startDate_desc":
-					deviceServices = deviceServices.OrderByDescending(ds => ds.DateStarted);
-					break;
-				case "endDate":
-					deviceServices = deviceServices.OrderBy(ds => ds.DateCompleted);
-					break;
-				case "endDate_desc":
-					deviceServices = deviceServices.OrderByDescending(ds => ds.DateCompleted);
+				case nameof(DeviceService.DateOrdered) + "_desc":
+					deviceServices = deviceServices.OrderByDescending(ds => ds.DateOrdered);
 					break;
 				case "cost":
 					deviceServices = deviceServices.OrderBy(ds => ds.Service.Price);
@@ -87,7 +83,7 @@ namespace RepairShop.Controllers
 					deviceServices = deviceServices.OrderByDescending(ds => ds.Service.Price);
 					break;
 				default:
-					deviceServices = deviceServices.OrderByDescending(ds => ds.DateStarted);
+					deviceServices = deviceServices.OrderByDescending(ds => ds.DateOrdered);
 					break;
 			}
 			int pageSize = 4;
@@ -98,10 +94,12 @@ namespace RepairShop.Controllers
 			return View(deviceDetails);
 		}
 
-        // GET: Devices/Create
-        public IActionResult Create()
+		
+
+		// GET: Devices/Create
+		public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name");
             return View();
         }
 
@@ -110,7 +108,7 @@ namespace RepairShop.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CustomerId,SerialNbr,Type,Make,Model")] Device device)
+        public async Task<IActionResult> Create([Bind("Id,UserId,SerialNbr,Type,Make,Model")] Device device)
         {
             if (ModelState.IsValid)
             {
@@ -118,7 +116,7 @@ namespace RepairShop.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", device.CustomerId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name", device.UserId);
             return View(device);
         }
 
@@ -135,7 +133,7 @@ namespace RepairShop.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", device.CustomerId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name", device.UserId);
             return View(device);
         }
 
@@ -144,7 +142,7 @@ namespace RepairShop.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,CustomerId,SerialNbr,Type,Make,Model")] Device device)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,UserId,SerialNbr,Type,Make,Model")] Device device)
         {
             if (id != device.Id)
             {
@@ -171,7 +169,7 @@ namespace RepairShop.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", device.CustomerId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name", device.UserId);
             return View(device);
         }
 
@@ -184,7 +182,7 @@ namespace RepairShop.Controllers
             }
 
             var device = await _context.Devices
-                .Include(d => d.Customer)
+                .Include(d => d.User)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (device == null)
             {

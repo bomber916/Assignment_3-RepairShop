@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RepairShop.Data;
 using RepairShop.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace RepairShop.Controllers
 {
-    public class ServicesController : Controller
+    public class ServicesController : BaseController
     {
         private readonly RepairShopContext _context;
 
@@ -25,8 +27,34 @@ namespace RepairShop.Controllers
             return View(await _context.Services.ToListAsync());
         }
 
-        // GET: Services/Details/5
-        public async Task<IActionResult> Details(long? id)
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> AddToCart([Bind("DeviceId,ServiceId,Quantity")] DeviceService ds)
+		{
+			if (HttpContext.Session.Keys.Count() == 0)
+			{
+				return RedirectToAction(AuthAction, "Users");
+			}
+			var cartString = HttpContext.Session.GetString(SessionCart) ?? "";
+			List<DeviceService> shoppingCart = JsonConvert.DeserializeObject<List<DeviceService>>(cartString);
+
+			if (shoppingCart == null)
+			{
+				shoppingCart = new List<DeviceService>();
+			}
+
+			ds.DateOrdered = DateTime.Now;
+
+			shoppingCart.Add(ds);
+
+			cartString = JsonConvert.SerializeObject(shoppingCart);
+			HttpContext.Session.SetString(SessionCart, cartString);
+
+			return RedirectToAction("Index");
+		}
+
+		// GET: Services/Details/5
+		public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
             {
@@ -39,6 +67,22 @@ namespace RepairShop.Controllers
             {
                 return NotFound();
             }
+
+			var user = _context.Users
+				.Include(c => c.Devices)
+				.Single(c => c.Id == 1);
+
+			var userDevices = new List<SelectListItem>();
+			foreach ( var item in user.Devices)
+			{
+				userDevices.Add(
+					new SelectListItem
+					{
+						Text = item.Make + item.Model,
+						Value = item.Id.ToString(),
+					});
+			}
+			ViewData["user_devices"] = userDevices;
 
             return View(service);
         }

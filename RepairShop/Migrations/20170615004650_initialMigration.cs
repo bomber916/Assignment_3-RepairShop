@@ -10,7 +10,7 @@ namespace RepairShop.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -22,7 +22,7 @@ namespace RepairShop.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,7 +46,7 @@ namespace RepairShop.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CustomerId = table.Column<long>(nullable: false),
+                    UserId = table.Column<long>(nullable: false),
                     Make = table.Column<string>(nullable: true),
                     Model = table.Column<string>(nullable: true),
                     SerialNbr = table.Column<string>(nullable: false),
@@ -56,9 +56,9 @@ namespace RepairShop.Migrations
                 {
                     table.PrimaryKey("PK_Devices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Devices_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        name: "FK_Devices_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -93,9 +93,9 @@ namespace RepairShop.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Devices_CustomerId",
+                name: "IX_Devices_UserId",
                 table: "Devices",
-                column: "CustomerId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceServices_DeviceId",
@@ -120,7 +120,7 @@ namespace RepairShop.Migrations
                 name: "Services");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Users");
         }
     }
 }

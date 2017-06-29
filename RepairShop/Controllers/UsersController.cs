@@ -8,25 +8,26 @@ using Microsoft.EntityFrameworkCore;
 using RepairShop.Data;
 using RepairShop.Models;
 using RepairShop.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace RepairShop.Controllers
 {
-    public class CustomersController : Controller
+    public class UsersController : BaseController
     {
         private readonly RepairShopContext _context;
 
-        public CustomersController(RepairShopContext context)
+        public UsersController(RepairShopContext context)
         {
             _context = context;    
         }
 
-        // GET: Customers
+        // GET: Users
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Customers.ToListAsync());
+            return View(await _context.Users.ToListAsync());
         }
 
-        // GET: Customers/Details/5
+        // GET: Users/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -34,50 +35,50 @@ namespace RepairShop.Controllers
                 return NotFound();
             }
 
-			var customerDetail = new CustomerDetailViewModel();
+			var userDetail = new UserDetailViewModel();
 
-            var customer = await _context.Customers
+            var user = await _context.Users
 				.AsNoTracking()
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
+            if (user == null)
             {
                 return NotFound();
             }
-			customerDetail.Customer = customer;
-			customerDetail.Devices = _context.Devices
+			userDetail.User = user;
+			userDetail.Devices = _context.Devices
 				.AsNoTracking()
-				.Where(d => d.CustomerId == customer.Id).ToList();
-			customerDetail.TotalEarned = _context.DeviceServices
+				.Where(d => d.UserId == user.Id).ToList();
+			userDetail.TotalEarned = _context.DeviceServices
 				.AsNoTracking()
-				.Where(ds => ds.Device.CustomerId == customer.Id)
+				.Where(ds => ds.Device.UserId == user.Id)
 				.Sum(ds => ds.Service.Price);
 
-            return View(customerDetail);
+            return View(userDetail);
         }
 
-        // GET: Customers/Create
+        // GET: Users/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Customers/Create
+        // POST: Users/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Address,Phone,EmailAddress")] Customer customer)
+        public async Task<IActionResult> Create([Bind("Id,Name,Address,Phone,EmailAddress")] User user)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(customer);
+                _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(customer);
+            return View(user);
         }
 
-        // GET: Customers/Edit/5
+        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -85,22 +86,22 @@ namespace RepairShop.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers.SingleOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
+            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
+            if (user == null)
             {
                 return NotFound();
             }
-            return View(customer);
+            return View(user);
         }
 
-        // POST: Customers/Edit/5
+        // POST: Users/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Address,Phone,EmailAddress")] Customer customer)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Address,Phone,EmailAddress")] User user)
         {
-            if (id != customer.Id)
+            if (id != user.Id)
             {
                 return NotFound();
             }
@@ -109,12 +110,12 @@ namespace RepairShop.Controllers
             {
                 try
                 {
-                    _context.Update(customer);
+                    _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerExists(customer.Id))
+                    if (!UserExists(user.Id))
                     {
                         return NotFound();
                     }
@@ -125,10 +126,10 @@ namespace RepairShop.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(customer);
+            return View(user);
         }
 
-        // GET: Customers/Delete/5
+        // GET: Users/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -136,30 +137,80 @@ namespace RepairShop.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
+            var user = await _context.Users
                 .SingleOrDefaultAsync(m => m.Id == id);
-            if (customer == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(customer);
+            return View(user);
         }
 
-        // POST: Customers/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var customer = await _context.Customers.SingleOrDefaultAsync(m => m.Id == id);
-            _context.Customers.Remove(customer);
+            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
+            _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool CustomerExists(long id)
+		public IActionResult Login(string controller = "Home", string action = "Index")
+		{
+			return View(new User());
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Login([Bind("UserName,Password")] User user)
+		{
+			try
+			{
+				if (!String.IsNullOrWhiteSpace(user.UserName) && !String.IsNullOrWhiteSpace(user.Password))
+				{
+					var foundUser = await _context.Users.SingleOrDefaultAsync(u => u.UserName.ToLower() == user.UserName.ToLower());
+					if (foundUser != null)
+					{
+						if (foundUser.Password == user.Password)
+						{
+							HttpContext.Session.SetString(SessionKeyUserName, foundUser.UserName);
+							HttpContext.Session.SetString(SessionKeyUserId, foundUser.Id.ToString());
+						}
+						else
+						{
+							throw new UnauthorizedAccessException();
+						}
+					}
+					else
+					{
+						throw new UnauthorizedAccessException();
+					}
+				}
+				else
+				{
+					throw new UnauthorizedAccessException();
+				}
+			}
+			catch (UnauthorizedAccessException)
+			{
+				return RedirectToAction("Login");
+			}
+			return RedirectToAction("Index", "Home", new { area = "" });
+
+		}
+
+		public IActionResult Logout([Bind("UserName,Password")] User user)
+		{
+			HttpContext.Session.Clear();
+			return RedirectToAction("Index", "Home", new { area = "" });
+		}
+
+		private bool UserExists(long id)
         {
-            return _context.Customers.Any(e => e.Id == id);
+            return _context.Users.Any(e => e.Id == id);
         }
     }
 }

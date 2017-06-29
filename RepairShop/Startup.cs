@@ -31,8 +31,16 @@ namespace RepairShop
         {
 			services.AddDbContext<RepairShopContext>(options =>
 			options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            // Add framework services.
-            services.AddMvc();
+
+			services.AddSession(options =>
+			{
+				// Set a short timeout for easy testing.
+				options.CookieHttpOnly = true;
+				options.CookieName = ".RepairShop.Session";
+
+			});
+			// Add framework services.
+			services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,8 +60,9 @@ namespace RepairShop
             }
 
             app.UseStaticFiles();
+			app.UseSession();
 
-            app.UseMvc(routes =>
+			app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",

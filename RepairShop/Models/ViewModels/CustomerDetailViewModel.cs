@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace RepairShop.Models.ViewModels
 {
-    public class CustomerDetailViewModel
+    public class UserDetailViewModel
     {
-		public Customer Customer { get; set; }
+		public User User { get; set; }
 		public ICollection<Device> Devices { get; set; }
 
 		[DisplayFormat(DataFormatString = "{0:C}", ApplyFormatInEditMode = true)]

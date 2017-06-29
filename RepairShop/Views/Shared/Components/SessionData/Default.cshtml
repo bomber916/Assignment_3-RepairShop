@@ -1,0 +1,18 @@
+@model RepairShop.Models.ViewModels.SessionDataViewModel
+
+@if (Model.User != null)
+{
+	<span style="color:white">Welcome @Model.User.Name</span>
+}
+else
+{
+	<a asp-controller="Users" asp-action="Login" style="color:white"><span class="glyphicon glyphicon-user"></span></a>
+}
+
+<a asp-controller="DeviceServices" asp-action="ShoppingCart" style="color:white">
+	<span class="glyphicon glyphicon-shopping-cart"></span>
+	@if((Model.ShoppingCart?.Count ?? 0) > 0)
+	{
+		@Model.SubTotal;
+	}
+</a>

@@ -16,7 +16,7 @@ namespace RepairShop.Migrations
                 .HasAnnotation("ProductVersion", "1.1.2")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("RepairShop.Models.Customer", b =>
+            modelBuilder.Entity("RepairShop.Models.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
@@ -32,7 +32,7 @@ namespace RepairShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("RepairShop.Models.Device", b =>
@@ -40,7 +40,7 @@ namespace RepairShop.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CustomerId");
+                    b.Property<long>("UserId");
 
                     b.Property<string>("Make");
 
@@ -53,7 +53,7 @@ namespace RepairShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Devices");
                 });
@@ -101,9 +101,9 @@ namespace RepairShop.Migrations
 
             modelBuilder.Entity("RepairShop.Models.Device", b =>
                 {
-                    b.HasOne("RepairShop.Models.Customer", "Customer")
+                    b.HasOne("RepairShop.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("CustomerId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

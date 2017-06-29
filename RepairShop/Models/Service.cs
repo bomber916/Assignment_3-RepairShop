@@ -22,6 +22,9 @@ namespace RepairShop.Models
 		[MaxLength(2000, ErrorMessage ="Maximum length for this field is 2000 characters.")]
         public string Description { get; set; }
 
+		public string ImagePath { get; set; }
+
+		public string Type { get; set; }
         #endregion
 
         #region Children

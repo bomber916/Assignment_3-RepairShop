@@ -19,16 +19,14 @@ namespace RepairShop.Models
         [Required]
         public long ServiceId { get; set; }
 
-		[Display(Name ="Date Started")]
+		[Display(Name ="Date Ordered")]
 		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-		public DateTime? DateStarted { get; set; }
-
-		[Display(Name ="Date Completed")]
-		[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
-		public DateTime? DateCompleted { get; set; }
+		public DateTime? DateOrdered{ get; set; }
 
 		[MaxLength(2000, ErrorMessage = "Maximum length for this field is 2000 characters.")]
         public string Comments { get; set; }
+
+		public int? Quantity { get; set; }
 
         #endregion
 

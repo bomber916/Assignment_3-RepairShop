@@ -17,6 +17,13 @@ namespace RepairShop.Data
         public DbSet<Service> Services { get; set; }
         public DbSet<DeviceService> DeviceServices { get; set; }
         public DbSet<Device> Devices { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-    }
+        public DbSet<User> Users { get; set; }
+
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder.Entity<User>()
+				 .HasIndex(u => u.UserName)
+				 .IsUnique();
+		}
+	}
 }

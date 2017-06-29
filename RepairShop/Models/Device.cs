@@ -14,7 +14,7 @@ namespace RepairShop.Models
         public long Id { get; set; }
 
         [Required]
-        public long CustomerId { get; set; }
+        public long UserId { get; set; }
 
         [Required]
 		[Display(Name = "Serial #")]
@@ -30,7 +30,7 @@ namespace RepairShop.Models
 
         #region Parents
 
-        public virtual Customer Customer { get; set; }
+        public virtual User User { get; set; }
 
         #endregion
 

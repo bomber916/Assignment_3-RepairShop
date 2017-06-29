@@ -1,4 +1,4 @@
-@model RepairShop.Models.ViewModels.CustomerDetailViewModel
+@model RepairShop.Models.ViewModels.UserDetailViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -7,34 +7,34 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Customer</h4>
+    <h4>User</h4>
     <hr />
 	<div class="row">
 		<div class="col-md-6">
 			<dl class="dl-horizontal">
 				<dt>
-					@Html.DisplayNameFor(model => model.Customer.Name)
+					@Html.DisplayNameFor(model => model.User.Name)
 				</dt>
 				<dd>
-					@Html.DisplayFor(model => model.Customer.Name)
+					@Html.DisplayFor(model => model.User.Name)
 				</dd>
 				<dt>
-					@Html.DisplayNameFor(model => model.Customer.Address)
+					@Html.DisplayNameFor(model => model.User.Address)
 				</dt>
 				<dd>
-					@Html.DisplayFor(model => model.Customer.Address)
+					@Html.DisplayFor(model => model.User.Address)
 				</dd>
 				<dt>
-					@Html.DisplayNameFor(model => model.Customer.Phone)
+					@Html.DisplayNameFor(model => model.User.Phone)
 				</dt>
 				<dd>
-					@Html.DisplayFor(model => model.Customer.Phone)
+					@Html.DisplayFor(model => model.User.Phone)
 				</dd>
 				<dt>
-					@Html.DisplayNameFor(model => model.Customer.EmailAddress)
+					@Html.DisplayNameFor(model => model.User.EmailAddress)
 				</dt>
 				<dd>
-					@Html.DisplayFor(model => model.Customer.EmailAddress)
+					@Html.DisplayFor(model => model.User.EmailAddress)
 				</dd>
 			</dl>
 		</div>
@@ -51,7 +51,7 @@
 	</div>
 </div>
 <div>
-	<a asp-action="Edit" asp-route-id="@Model.Customer.Id">Edit</a> |
+	<a asp-action="Edit" asp-route-id="@Model.User.Id">Edit</a> |
 	<a asp-action="Index">Back to List</a>
 </div>
 <hr/>
